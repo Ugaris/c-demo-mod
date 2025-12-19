@@ -30,6 +30,12 @@ if(WIN32)
         PREFIX ""
         SUFFIX ".dll"
     )
+    # Allow undefined symbols (resolved at runtime by host application)
+    if(MSVC)
+        target_link_options(${MOD_OUTPUT_NAME} PRIVATE /FORCE:UNRESOLVED)
+    else()
+        target_link_options(${MOD_OUTPUT_NAME} PRIVATE -Wl,--allow-shlib-undefined)
+    endif()
 elseif(APPLE)
     # macOS: output as .dylib, build universal binary
     set_target_properties(${MOD_OUTPUT_NAME} PROPERTIES
@@ -40,6 +46,8 @@ elseif(APPLE)
     if(CMAKE_OSX_ARCHITECTURES STREQUAL "")
         set(CMAKE_OSX_ARCHITECTURES "x86_64;arm64" CACHE STRING "Build architectures for macOS")
     endif()
+    # Allow undefined symbols (resolved at runtime by host application)
+    target_link_options(${MOD_OUTPUT_NAME} PRIVATE -undefined dynamic_lookup)
 else()
     # Linux: output as .so
     set_target_properties(${MOD_OUTPUT_NAME} PROPERTIES
@@ -48,6 +56,8 @@ else()
     )
     # Set visibility for symbols
     target_compile_options(${MOD_OUTPUT_NAME} PRIVATE -fvisibility=hidden)
+    # Allow undefined symbols (default, but be explicit)
+    target_link_options(${MOD_OUTPUT_NAME} PRIVATE -Wl,--allow-shlib-undefined)
 endif()
 
 # Compiler warnings
