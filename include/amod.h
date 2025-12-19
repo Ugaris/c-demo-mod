@@ -12,6 +12,13 @@
 #include "astonia.h"
 #include "amod_structs.h"
 
+/* Cross-compiler printf format attribute */
+#if defined(__GNUC__) || defined(__clang__)
+#define PRINTF_FORMAT(fmt, args) __attribute__((format(printf, fmt, args)))
+#else
+#define PRINTF_FORMAT(fmt, args)
+#endif
+
 /* ========================================================================
  * MOD LIFECYCLE CALLBACKS
  * Implement these functions in your mod
@@ -64,10 +71,10 @@ int amod_client_cmd(const char *buf);
  * ======================================================================== */
 
 /* Logging functions */
-DLL_IMPORT int note(const char *format, ...) __attribute__((format(printf, 1, 2)));
-DLL_IMPORT int warn(const char *format, ...) __attribute__((format(printf, 1, 2)));
-DLL_IMPORT int fail(const char *format, ...) __attribute__((format(printf, 1, 2)));
-DLL_IMPORT void addline(const char *format, ...) __attribute__((format(printf, 1, 2)));
+DLL_IMPORT int note(const char *format, ...) PRINTF_FORMAT(1, 2);
+DLL_IMPORT int warn(const char *format, ...) PRINTF_FORMAT(1, 2);
+DLL_IMPORT int fail(const char *format, ...) PRINTF_FORMAT(1, 2);
+DLL_IMPORT void addline(const char *format, ...) PRINTF_FORMAT(1, 2);
 
 /* Rendering functions */
 DLL_IMPORT void render_rect(int sx, int sy, int ex, int ey, unsigned short int color);
