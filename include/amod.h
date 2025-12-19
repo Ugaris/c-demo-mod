@@ -25,25 +25,25 @@
  * ======================================================================== */
 
 /* Called when mod is loaded */
-void amod_init(void);
+DLL_EXPORT void amod_init(void);
 
 /* Called when mod is unloaded */
-void amod_exit(void);
+DLL_EXPORT void amod_exit(void);
 
 /* Return version string for display */
-char *amod_version(void);
+DLL_EXPORT char *amod_version(void);
 
 /* Called when player enters the game */
-void amod_gamestart(void);
+DLL_EXPORT void amod_gamestart(void);
 
 /* Called every game tick (24 times per second) */
-void amod_tick(void);
+DLL_EXPORT void amod_tick(void);
 
 /* Called every frame (up to 60+ times per second) */
-void amod_frame(void);
+DLL_EXPORT void amod_frame(void);
 
 /* Called when mouse moves */
-void amod_mouse_move(int x, int y);
+DLL_EXPORT void amod_mouse_move(int x, int y);
 
 /* ========================================================================
  * INPUT CALLBACKS
@@ -54,16 +54,16 @@ void amod_mouse_move(int x, int y);
  * ======================================================================== */
 
 /* Mouse click handler */
-int amod_mouse_click(int x, int y, int what);
+DLL_EXPORT int amod_mouse_click(int x, int y, int what);
 
 /* Key down handler */
-int amod_keydown(int key);
+DLL_EXPORT int amod_keydown(int key);
 
 /* Key up handler (must handle if keydown was handled) */
-int amod_keyup(int key);
+DLL_EXPORT int amod_keyup(int key);
 
 /* Chat command handler (commands starting with #) */
-int amod_client_cmd(const char *buf);
+DLL_EXPORT int amod_client_cmd(const char *buf);
 
 /* ========================================================================
  * CLIENT-EXPORTED FUNCTIONS
