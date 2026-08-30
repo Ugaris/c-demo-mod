@@ -11,10 +11,13 @@
 #else
 #if __GNUC__ >= 4 || defined(__clang__)
 #define DLL_EXPORT __attribute__((visibility("default")))
-#define DLL_IMPORT
+/* 'extern' keeps data declarations from becoming tentative definitions:
+ * without it the mod gets its own hidden zeroed copy of every client
+ * variable instead of reading the client's. */
+#define DLL_IMPORT extern
 #else
 #define DLL_EXPORT
-#define DLL_IMPORT
+#define DLL_IMPORT extern
 #endif
 #endif
 
