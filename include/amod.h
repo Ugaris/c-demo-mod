@@ -101,17 +101,18 @@ DLL_IMPORT int mil_rank(int exp);
  * ======================================================================== */
 
 /* Player state */
-DLL_IMPORT int hp;
-DLL_IMPORT int mana;
-DLL_IMPORT int rage;
-DLL_IMPORT int endurance;
-DLL_IMPORT int lifeshield;
-DLL_IMPORT int experience;
-DLL_IMPORT int gold;
-DLL_IMPORT int tick;
+/* Current client types: stats are 16-bit, experience/gold/tick 32-bit */
+DLL_IMPORT unsigned short hp;
+DLL_IMPORT unsigned short mana;
+DLL_IMPORT unsigned short rage;
+DLL_IMPORT unsigned short endurance;
+DLL_IMPORT unsigned short lifeshield;
+DLL_IMPORT unsigned int experience;
+DLL_IMPORT unsigned int gold;
+DLL_IMPORT unsigned int tick;
 
 /* Stats: value[0][x] = modified, value[1][x] = base */
-DLL_IMPORT int value[2][V_MAX];
+DLL_IMPORT unsigned short value[2][V_MAX];
 
 /* Inventory */
 DLL_IMPORT int item[INVENTORYSIZE];
