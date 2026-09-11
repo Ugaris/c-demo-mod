@@ -25,9 +25,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Setup MSYS2 (Windows)
+        if: matrix.platform == 'windows'
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: mingw64
+          update: false
+          install: >-
+            mingw-w64-x86_64-toolchain
+            mingw-w64-x86_64-cmake
+            mingw-w64-x86_64-ninja
+            unzip
+
       - name: Fetch client import library (Windows)
         if: matrix.platform == 'windows'
-        shell: bash
+        shell: msys2 {0}
         run: |
           # Windows mods must link the client's import library; a DLL with
           # unresolved client symbols crashes the game on the first API call.
@@ -39,10 +51,11 @@ jobs:
 
       - name: Build (Windows)
         if: matrix.platform == 'windows'
+        shell: msys2 {0}
         run: |
-          cmake -B build -DCMAKE_BUILD_TYPE=Release
-          cmake --build build --config Release
-          cp build/Release/c_demo_mod.dll c_demo_mod.dll
+          cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
+          cmake --build build
+          cp build/c_demo_mod.dll c_demo_mod.dll
 
       - name: Build (macOS)
         if: matrix.platform == 'macos'
