@@ -1,24 +1,16 @@
-/*
- * DLL Export/Import macros for cross-platform compatibility
- */
-
-#ifndef DLL_H
-#define DLL_H
-
 #ifdef _WIN32
+// On Windows, always use __declspec for DLL exports (works with all compilers)
 #define DLL_EXPORT __declspec(dllexport)
-#define DLL_IMPORT __declspec(dllimport)
+// #define DLL_IMPORT __declspec(dllimport)
+#define DLL_IMPORT
 #else
+// On Unix-like systems, use visibility attributes for GCC/Clang
 #if __GNUC__ >= 4 || defined(__clang__)
 #define DLL_EXPORT __attribute__((visibility("default")))
-/* 'extern' keeps data declarations from becoming tentative definitions:
- * without it the mod gets its own hidden zeroed copy of every client
- * variable instead of reading the client's. */
-#define DLL_IMPORT extern
+// Imports resolve via the dynamic linker, so no attribute is required
+#define DLL_IMPORT
 #else
 #define DLL_EXPORT
-#define DLL_IMPORT extern
+#define DLL_IMPORT
 #endif
 #endif
-
-#endif /* DLL_H */
