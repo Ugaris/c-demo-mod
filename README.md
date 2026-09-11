@@ -29,10 +29,22 @@ A simple native C mod demonstrating the Ugaris Client mod API. This mod serves a
 ### Manual Installation
 
 1. Download the appropriate binary for your platform from [Releases](https://github.com/ugaris/ugaris-native-demo-mod/releases):
-   - Windows: `bmod.dll`
-   - macOS: `bmod.dylib`
-   - Linux: `bmod.so`
-2. Place the file in your game directory (same folder as the game executable)
+   - Windows: `c_demo_mod.dll`
+   - macOS: `c_demo_mod.dylib`
+   - Linux: `c_demo_mod.so`
+2. Create a folder for it under the game's user directory and drop the
+   library in beside a `mod.json`:
+
+   ```
+   <userdir>/mods/my-c-demo-mod/
+     mod.json          # {"name": "C Demo Mod", "version": "1.0.1"}
+     c_demo_mod.so
+   ```
+
+   `<userdir>` is `~/.local/share/Astonia/` on Linux, `%APPDATA%\Astonia\` on
+   Windows and `~/Library/Application Support/Astonia/` on macOS — or whatever
+   the launcher passes as `--userdir`. A folder without a `mod.json` is
+   deliberately ignored.
 
 ## Building from Source
 
@@ -59,21 +71,21 @@ cmake --build build --config Release
 ```bash
 cmake -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build --config Release
-# Output: build/Release/bmod.dll
+# Output: build/Release/c_demo_mod.dll
 ```
 
 **macOS (Universal Binary):**
 ```bash
 cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64"
 cmake --build build
-# Output: build/bmod.dylib
+# Output: build/c_demo_mod.dylib
 ```
 
 **Linux:**
 ```bash
 cmake -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build
-# Output: build/bmod.so
+# Output: build/c_demo_mod.so
 ```
 
 ## Mod API Overview
@@ -176,13 +188,27 @@ ugaris-native-demo-mod/
    ```
 5. GitHub Actions will build and create a release
 
-## Mod Slots
+## How the client finds your mod
 
-The client loads mods from these slots: `amod`, `bmod`, `cmod`, `dmod`, `emod`, `fmod`
+Each mod is one folder under the player's user directory, holding a `mod.json`
+plus your library:
 
-- `amod` is **reserved** for system use
-- Use `bmod` through `fmod` for community mods
-- The launcher may rename your mod file to an available slot
+```
+<userdir>/mods/
+  Ugaris-c-demo-mod/
+    mod.json
+    c_demo_mod.so
+```
+
+- The **filename does not matter** — the client loads whatever library it finds
+  in the folder. The old `amod`..`fmod` slots are gone, and so is the limit on
+  how many mods can be installed.
+- Ship more than one library for a platform (say a bundled dependency) and you
+  must add `"entry"` to your `mod.json` naming your own, without the extension.
+  The client will not guess.
+- `amod` is still special, but it is not a slot you can claim: the Ugaris
+  system mod ships in the game depot at `bin/amod.<ext>` and is the only mod
+  allowed to override client behaviour.
 
 ## License
 
