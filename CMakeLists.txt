@@ -23,6 +23,11 @@ target_include_directories(${MOD_OUTPUT_NAME} PRIVATE
     ${CMAKE_SOURCE_DIR}/include
 )
 
+# astonia.h pulls in game/memory.h, which defaults to the mimalloc allocator.
+# Mods do not have mimalloc's headers, so select the plain libc one - the same
+# -DUSE_MIMALLOC=0 the mod SDK README documents.
+target_compile_definitions(${MOD_OUTPUT_NAME} PRIVATE USE_MIMALLOC=0)
+
 # Platform-specific settings
 if(WIN32)
     # Windows: output as .dll
