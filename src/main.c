@@ -12,10 +12,11 @@
 
 #include <stdio.h>
 #include <string.h>
-#include "amod.h"
+#include "amod/amod.h"
 
 /* Mod state */
 static int show_overlay = 0;
+static int overlay_opacity = 70;  /* demonstrates an AMOD_OPT_SLIDER */
 static int frame_count = 0;
 
 /* ========================================================================
@@ -112,16 +113,56 @@ DLL_EXPORT int amod_mouse_click(int x, int y, int what)
     return 0; /* Don't consume */
 }
 
-DLL_EXPORT int amod_keydown(int key)
+DLL_EXPORT int amod_keydown(SDL_Keycode key)
 {
     (void)key;
     return 0; /* Don't consume */
 }
 
-DLL_EXPORT int amod_keyup(int key)
+DLL_EXPORT int amod_keyup(SDL_Keycode key)
 {
     (void)key;
     return 0;
+}
+
+/* ---- Settings in Options > Mods -----------------------------------------
+ * Export these three and the client draws your settings under your mod's name
+ * in the Mods tab: a heading, a checkbox, a slider. It calls amod_option_get()
+ * each frame it draws them, so return your live values; it never saves them
+ * for you, so persist anything you care about under client_config_dir(). */
+DLL_EXPORT int amod_options_count(void)
+{
+    return 3;
+}
+
+DLL_EXPORT int amod_option_get(int index, struct amod_option *out)
+{
+    memset(out, 0, sizeof(*out));
+    switch (index) {
+    case 0:
+        out->type = AMOD_OPT_HEADER;
+        snprintf(out->label, sizeof(out->label), "Demo");
+        return 1;
+    case 1:
+        out->type = AMOD_OPT_TOGGLE;
+        out->value = show_overlay;
+        snprintf(out->label, sizeof(out->label), "Show overlay");
+        return 1;
+    case 2:
+        out->type = AMOD_OPT_SLIDER;
+        out->value = overlay_opacity;
+        out->min_val = 0;
+        out->max_val = 100;
+        snprintf(out->label, sizeof(out->label), "Opacity");
+        return 1;
+    }
+    return 0;
+}
+
+DLL_EXPORT void amod_option_set(int index, int value)
+{
+    if (index == 1) show_overlay = value;
+    else if (index == 2) overlay_opacity = value;
 }
 
 DLL_EXPORT int amod_client_cmd(const char *buf)
