@@ -6,11 +6,11 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 
 # Output name based on platform
 if(WIN32)
-    set(MOD_OUTPUT_NAME "bmod")
+    set(MOD_OUTPUT_NAME "c_demo_mod")
 elseif(APPLE)
-    set(MOD_OUTPUT_NAME "bmod")
+    set(MOD_OUTPUT_NAME "c_demo_mod")
 else()
-    set(MOD_OUTPUT_NAME "bmod")
+    set(MOD_OUTPUT_NAME "c_demo_mod")
 endif()
 
 # Create shared library
